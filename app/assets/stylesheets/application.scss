@@ -15,9 +15,44 @@
  *= require @fortawesome/fontawesome-free/css/all.min.css
  *= require tailwindcss/base
  *= require tailwindcss/components
- *= require ./application
+ * require ./application
  *= require tailwindcss/utilities
 
  *= require_tree .
- * require_self
+ *= require_self
  */
+
+// PostCss就是讓tailwind可以使用@apply的關鍵工具；
+// 這個工具能對Css進行 Post Processing，具體來說，就是把輸入的Css，跟進設定和載入的Plugin，變成一個新的CSS；
+// 例如，@apply就是其中一個plugin的效果
+
+.field {
+    .label {
+        @apply .block .font-semibold;
+        // 要不要加.都可以
+        // background-color: red;
+    }
+
+    .input { // 客製化tailwind類別
+        // @apply .px-3 .py-2 .text-lg .border .border-gray-400 .rounded-lg focus:outline-none;
+        @apply .px-3 .py-2 .text-lg .border .border-gray-400 .rounded-lg;
+
+        &:focus {
+            @apply .outline-none;
+        }
+    }
+}
+
+.button {
+    @apply .bg-gray-300 .px-3 .py-2 .rounded;
+}
+
+nav {
+    .user-button {
+        @apply .px-3 .py-2 .bg-blue-300 .rounded-sm;
+
+        &:hover {
+            @apply bg-blue-200;
+        }
+    }
+}

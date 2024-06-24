@@ -1,0 +1,29 @@
+.field {
+    .label {
+        @apply .block .font-semibold;
+        // 要不要加.都可以
+    }
+
+    .input { // 客製化tailwind類別
+        // @apply px-3 py-2 text-lg border border-gray-400 rounded-lg focus:outline-none;
+        @apply .px-3 .py-2 .text-lg .border .border-gray-400 .rounded-lg;
+        
+        &:focus {
+            @apply .outline-none;
+        }
+    }
+}
+
+.button {
+    @apply .bg-gray-300 .px-3 .py-2 .rounded;
+}
+
+nav {
+    .user-button {
+        @apply .px-3 .py-2 .bg-blue-300 .rounded-sm;
+
+        &:hover {
+            @apply bg-blue-200;
+        }
+    }
+}

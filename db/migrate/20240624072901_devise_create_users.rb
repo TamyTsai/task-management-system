@@ -1,3 +1,4 @@
+# rails g devise User
 # frozen_string_literal: true
 
 class DeviseCreateUsers < ActiveRecord::Migration[6.1]
