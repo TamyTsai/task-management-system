@@ -13,7 +13,14 @@
   <!-- 用data attribute灌資料 不用api -->
   <!-- data-隨便取名字都可（data-？？？）-->
   <!-- <div id="board" data-lists="[{&quot;id&quot;:1,&quot;name&quot;:&quot;TODO&quot;,&quot;user_id&quot;:1,&quot;position&quot;:1,&quot;created_at&quot;:&quot;2024-06-24T10:28:07.411Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:07.411Z&quot;,&quot;cards&quot;:[]},{&quot;id&quot;:2,&quot;name&quot;:&quot;DOING&quot;,&quot;user_id&quot;:1,&quot;position&quot;:2,&quot;created_at&quot;:&quot;2024-06-24T10:28:25.370Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:25.370Z&quot;,&quot;cards&quot;:[]},{&quot;id&quot;:3,&quot;name&quot;:&quot;DONE&quot;,&quot;user_id&quot;:1,&quot;position&quot;:3,&quot;created_at&quot;:&quot;2024-06-24T10:28:30.985Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:30.985Z&quot;,&quot;cards&quot;:[]}]"> -->
-    <div class="bg-gray-300 mx-2 w-64 rounded" v-for="list in lists">
+    <!-- <div class="bg-gray-300 mx-2 w-64 rounded" v-for="list in lists">
       <h2 class="px-3 py-1 font-bold">{{ list.name }}</h2>
-    </div>
+    </div> -->
+    <!-- 將以上獨立成一個component，達到 軟體元件再使用 的效果 -->
+    <List v-for="list in lists" :list="list" :key="list.id">
+    <!-- 為了避免重複 所以有key -->
+    <!-- list.vue 中： props: ["list"] // 於父層或外層餵資料給元件（list）的手法 -->
+    <!-- :list=「"list"」及 :key="「list」.id"是由前面的 v-for="「list」 in lists"來的 -->
+    <!-- lists是由 appliction.js中： data: { lists: JSON.parse(el.dataset.lists) } 來的 -->
+    </List>
 </div>
