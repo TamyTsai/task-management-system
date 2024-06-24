@@ -7,30 +7,71 @@
       <!-- <h2 class="header">{{ list.name }}</h2> -->
       <!-- 元件跟局部渲染的檔案一樣，不該主動抓資料，應該要由其他地方餵資料過來 -->
       <div class="deck">
-        <Card v-for="card in list.cards" :card="card" :key="card.id">
+        <!-- <Card v-for="card in list.cards" :card="card" :key="card.id"></Card> -->
+        <Card v-for="card in cards" :card="card" :key="card.id"></Card>
           <!-- 為了避免重複 所以有key -->
           <!-- card.vue 中： props: ["card"] -->
           <!-- :card=「"card"」及 :key="「card」.id"是由前面的 v-for="「card」 in list.cards"來的 -->
           <!-- list.cards 是由 index.html @lists.to_json(include: :cards)來的 -->
           <!-- 元件中 再用 其他元件 -->
-        </Card>
+        <div class="input-area">
+          <textarea class="content" v-model="content"></textarea>
+          <!-- data -->
+          <button class="button" @click="createCard">新增卡片</button>
+          <!-- @ 為 v-on: 之簡寫 -->
+          <!-- methods -->
+        </div>
       </div>
     </div>
 </template>
 
 <script> // javascript
+import Rails from '@rails/ujs'; // Rails內建的AJAX套件
 import Card from 'components/card'; // 引入隔壁的 卡片元件
 
 export default {
     name: 'List', // 可寫可不寫，寫了增加易讀性
     props: ["list"], // property // 於父層或外層餵資料給元件（list）的手法
-    components: { Card } // 註冊card元件 讓這裡可以用該元件
+    components: { Card }, // 註冊card元件 讓這裡可以用該元件
+    data: function() { //每個元件 都有自己的 狀態 與 一些資料，所以不能直接在data後接東西，而是要給一個function，然後接該元件 專屬的東西
+        return { // 回傳一個物件
+          content: '', // html中v-model綁定的東西
+          cards: this.list.cards, // 名為cards的 data屬性
+          // 因為目前在list這個元件中 所以有被餵食的這個東西進來
+        }
+    },
+    methods: {
+      createCard(event) { // 按下 新增卡片 按鈕後 會執行的動作
+        event.preventDefault();
+        // console.log(this.content);
 
-    // data: function() { //每個元件 都有自己的 狀態 與 一些資料，所以不能直接在data後接東西，而是要給一個function，然後接該元件 專屬的東西
-    //     return {
-
-    //     }
-    // }
+        // 打api 讓新增的卡片內容 可以傳送到後端 儲存進資料庫
+        let data = new FormData();
+        data.append("card[list_id]", this.list.id); // 蒐集資料
+        // 要知道卡片是在哪個清單下
+        data.append("card[name]", this.content);
+        // 在要傳送的資料中 加入name欄位值為this.content的card
+        Rails.ajax({
+          url: '/cards', // 往/cards送資料
+          // card controller中creat action中：format.json { render :show, status: :created, location: @card }
+          // show會呈現單一一筆資料，這裡透過push將資料塞進去，變最後一張卡片，所以就會顯示對應的卡片資料
+          type: 'POST', // 傳送的方法 // 用POST 會找create方法
+          // data: data, // 要傳送的資料
+          data,
+          dataType: 'json', // 預期傳送的資料格式為json
+          success: resp => { // ES6箭頭函式
+            // console.log(resp);
+            this.cards.push(resp); // 將目前的卡片 推到 卡片堆 中
+            // data屬性 有任何變化，畫面上 跟該data有關係的 就會跟著變化 即時更新
+            // cards 來自 cards: this.list.cards,
+            this.content = ""; // 資料傳送完（api 打完後），清掉輸入框內 文字
+          },
+          error: err => {
+            console.log(err);
+          }
+        });
+      }
+    }
 }
 </script>
 
@@ -45,6 +86,24 @@ export default {
 
     .deck {
       @apply .mt-2;
+    }
+
+    .input-area {
+      @apply .mt-2;
+
+      .content {
+        @apply .w-full .p-2 .rounded-sm;
+        &:focus {
+          @apply .outline-none;
+        }
+      }
+
+      .button {
+        @apply .px-3 .py-1 .font-semibold .text-sm .bg-blue-300 .rounded;
+        &:focus {
+          @apply .outline-none;
+        }
+      }
     }
  }
 
