@@ -23,19 +23,6 @@ class ListsController < ApplicationController
     # json.partial! "lists/list", list: @list
   end
 
-  # GET /lists/1 or /lists/1.json
-  def show
-  end
-
-  # GET /lists/new
-  def new
-    # @list = List.new
-    @lists = current_user.lists.new
-  end
-
-  # GET /lists/1/edit
-  def edit
-  end
 
   # POST /lists or /lists.json
   def create

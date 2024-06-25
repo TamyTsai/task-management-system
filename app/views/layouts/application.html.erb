@@ -16,8 +16,14 @@
   </head>
 
   <body>
-    <%= render 'shared/navbar' %>
-    <%= render 'shared/flash' if notice %>
-    <%= yield %>
+    <section class="flex flex-col h-screen overflow-hidden">
+      <!-- overflow-hidden：超過設定的長寬的範圍 都被隱藏起來 -->
+      <%= render 'shared/navbar' %>
+      <%= render 'shared/flash' if notice %>
+      <div class="overflow-auto bg-blue-300 h-full">
+      <!-- overflow-auto：橫向捲軸效果 -->
+        <%= yield %>
+      </div>
+    </section>
   </body>
 </html>

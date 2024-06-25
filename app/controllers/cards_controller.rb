@@ -1,11 +1,6 @@
 class CardsController < ApplicationController
   before_action :set_card, only: %i[ show edit update destroy move ]
 
-  # GET /cards or /cards.json
-  def index
-    @cards = Card.all
-  end
-
   def move
     # move_card PUT    /cards/:id/move(.:format)       cards#move
     # 先抓到要更新位置的資料（before action已做）
@@ -14,19 +9,6 @@ class CardsController < ApplicationController
     render 'show.json'
     # render show.json（app>views>cards>show.json.jbuilder）回去給前端
     # json.partial! "cards/card", card: @card
-  end
-
-  # GET /cards/1 or /cards/1.json
-  def show
-  end
-
-  # GET /cards/new
-  def new
-    @card = Card.new
-  end
-
-  # GET /cards/1/edit
-  def edit
   end
 
   # POST /cards or /cards.json

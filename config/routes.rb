@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :lists do
+  resources :lists, only: [:index, :create, :update, :destroy] do
     # url: `/lists/${this.lists[event.moved.newIndex].id}/move`
     member do
       put :move
@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :cards do
+  resources :cards, only: [:create, :update, :destroy] do
     # url: `/cards/${card_id}/move`, // 移動第幾張卡片
     member do 
       put :move

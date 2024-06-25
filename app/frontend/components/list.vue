@@ -1,7 +1,7 @@
 <!-- .vue為vue.js components的副檔名 -->
 
 <template> <!-- 放html一些結構的東西 -->
-    <div class="bg-gray-300 mx-2 w-64 rounded .px-3 .py-1">
+    <div class="bg-gray-300 mx-2 w-64 rounded px-3 py-3 flex-none h-full">
     <!-- <div class="list"> -->
       <h2 class="font-bold">{{ list.name }}</h2>
       <!-- <h2 class="header">{{ list.name }}</h2> -->
@@ -135,7 +135,8 @@ export default {
   }
 
  .list {
-    @apply .bg-gray-300 .mx-2 .w-64 .rounded .px-3 .py-1;
+    @apply .bg-gray-300 .mx-2 .w-64 .rounded .px-3 .py-3 .flex-none .h-full;
+    // flex-none：不要自己展開（預設會自己展開）
 
     .header {
     @apply .font-bold;
