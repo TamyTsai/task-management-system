@@ -17,7 +17,7 @@ ActiveStorage.start()
 import Vue from 'vue/dist/vue.esm';
 import List from 'components/list';
 import Rails from "@rails/ujs";
-import draggable from 'vuedraggable';
+import draggable from 'vuedraggable'; // 引入draggable套件 讓 清單 可以被拖拉
 
 document.addEventListener("turbolinks:load", function(event) {
     let el = document.querySelector('#board');
@@ -37,10 +37,10 @@ document.addEventListener("turbolinks:load", function(event) {
             // ES6中key與value相同時，可以只寫一個
             components: { List, draggable },
             methods: {
-                listMoved(event) { // 拖拉後會執行的動作
+                listMoved(event) { // 清單 拖拉後會執行的動作
                     // console.log(event);
 
-                    // 打API 將東西拖拉後的新位置資料 傳到後端 寫入資料庫
+                    // 打API 將清單拖拉後的新位置資料 傳到後端 寫入資料庫
                     // 1.蒐集準備 要傳送到後端的資料
                     let data = new FormData();
                     data.append("list[position]", event.moved.newIndex + 1 ); 

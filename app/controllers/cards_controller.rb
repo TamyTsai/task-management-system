@@ -1,9 +1,19 @@
 class CardsController < ApplicationController
-  before_action :set_card, only: %i[ show edit update destroy ]
+  before_action :set_card, only: %i[ show edit update destroy move ]
 
   # GET /cards or /cards.json
   def index
     @cards = Card.all
+  end
+
+  def move
+    # move_card PUT    /cards/:id/move(.:format)       cards#move
+    # 先抓到要更新位置的資料（before action已做）
+    @card.update(card_params)
+    # 因為已經知道卡片要去哪 屬於哪個清單id 所以只要直接更新即可 不需要用insert_at
+    render 'show.json'
+    # render show.json（app>views>cards>show.json.jbuilder）回去給前端
+    # json.partial! "cards/card", card: @card
   end
 
   # GET /cards/1 or /cards/1.json

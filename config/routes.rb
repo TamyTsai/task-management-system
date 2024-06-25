@@ -9,7 +9,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :cards
+  resources :cards do
+    # url: `/cards/${card_id}/move`, // 移動第幾張卡片
+    member do 
+      put :move
+      # move_card   PUT    /cards/:id/move(.:format)            cards#move
+    end
+  end
   
   root 'lists#index'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

@@ -7,13 +7,21 @@
     <!-- <h2 class="header">{{ list.name }}</h2> -->
     <!-- 元件跟局部渲染的檔案一樣，不該主動抓資料，應該要由其他地方餵資料過來 -->
     <div class="deck">
-      <!-- <Card v-for="card in list.cards" :card="card" :key="card.id"></Card> -->
-      <Card v-for="card in cards" :card="card" :key="card.id"></Card>
+      <draggable v-model="cards" ghost-class="ghost" group="list" @change="cardMoved">
+        <!-- 可以將卡片拖拉到所有 同一group的地方 -->
+        <!-- @change="cardMoved"：change事件發生時，執行cardMoved方法 -->
+        <!-- 綁定v-model 讓東西拖拉完後 相關的資料會相應地改變位置 -->
+        <!-- v-model="cards"中cards是由cards data屬性來的（cards: this.list.cards）-->
+
+        <!-- <Card v-for="card in list.cards" :card="card" :key="card.id"></Card> -->
+        <Card v-for="card in cards" :card="card" :key="card.id"></Card>
         <!-- 為了避免重複 所以有key -->
         <!-- card.vue 中： props: ["card"] -->
         <!-- :card=「"card"」及 :key="「card」.id"是由前面的 v-for="「card」 in list.cards"來的 -->
         <!-- list.cards 是由 index.html @lists.to_json(include: :cards)來的 -->
         <!-- 元件中 再用 其他元件 -->
+      </draggable>
+
       <div class="input-area">
         <!-- 非編輯模式下 出現新增卡片按鈕 -->
         <!-- <button v-if="!editing" class="button bg-gray-400" @click="editing = true">新增卡片</button> -->
@@ -35,11 +43,13 @@
 <script> // javascript
 import Rails from '@rails/ujs'; // Rails內建的AJAX套件
 import Card from 'components/card'; // 引入隔壁的 卡片元件
+import draggable from 'vuedraggable'; // 引入draggable套件 讓 卡片 可以被拖拉
+
 
 export default {
   name: 'List', // 可寫可不寫，寫了增加易讀性
   props: ["list"], // property // 於父層或外層餵資料給元件（list）的手法
-  components: { Card }, // 註冊card元件 讓這裡可以用該元件
+  components: { Card, draggable }, // 註冊card、draggable元件 讓這裡可以用該元件
   data: function() { //每個元件 都有自己的 狀態 與 一些資料，所以不能直接在data後接東西，而是要給一個function，然後接該元件 專屬的東西
       return { // 回傳一個物件
         content: '', // html中v-model綁定的東西
@@ -84,6 +94,35 @@ export default {
           console.log(err);
         }
       });
+    },
+
+    cardMoved(event) { // 卡片 拖拉後會執行的動作
+      // console.log(event); // 用來先看拖拉後會出現的事件內容
+
+      let evt = event.added || event.moved; // 跨清單移動會有added事件 同清單移動只有moved事件
+      if (evt) { //若evt存在
+        let el = evt.element;  //先抓是哪一張卡片被移動了
+        let card_id = el.id;
+
+        // 打API 將卡片拖拉後的新位置資料 傳到後端 寫入資料庫
+        // 1.蒐集準備 要傳送到後端的資料
+        let data = new FormData();
+        data.append("card[list_id]", this.list.id); // 移動到哪個清單
+        data.append("card[position]", evt.newIndex + 1 ); // 移動到哪個位置
+        // 2.打API
+        Rails.ajax({
+          url: `/cards/${card_id}/move`, // 移動第幾張卡片
+          type: 'PUT',
+          data,
+          dataType: 'json',
+          success: resp => {
+              console.log(resp);
+          },
+          error: err => {
+              console.log(err);
+          }
+        });
+      }
     }
   }
 }
@@ -91,6 +130,10 @@ export default {
 
 <style lang="scss" scoped> /* css */
 /* scoped讓此處寫的css只會生效於此元件，不會污染到外面 */
+.ghost {
+  @apply .border-2 .border-gray-400 .border-dashed .bg-gray-200;
+}
+
 .list {
   @apply .bg-gray-300 .mx-2 .w-64 .rounded .px-3 .py-1;
 
