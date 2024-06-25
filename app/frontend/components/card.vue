@@ -12,7 +12,7 @@
                 <a href="#" class="closeButton" @click="close">
                     <i class="fa-solid fa-xmark"></i>
                 </a>
-                <textarea class="content">{{ card.name }}</textarea>
+                <textarea class="content" v-model="card_name"></textarea>
                 <button class="updateButton" @click="update">更新</button>
             </div>
         </div>
@@ -20,15 +20,18 @@
 </template>
 
 <script> // javascript 
+// import { mapActions } from "vuex";
 export default {
     name: 'Card', // 可寫可不寫，寫了增加易讀性
     data: function() { // data裡給一個function，function裡給一個object
         return {
+            card_name: this.card.name, // this.card是外面傳進來的property
             editing: false
         }
     },
     props: ['card'],
     methods: {
+        // ...mapActions(["updateCard"]),
         close(event) {
             event.preventDefault();
             this.editing = false;
@@ -36,6 +39,9 @@ export default {
 
         update(event) {
             event.preventDefault();
+            this.$store.dispatch("updateCard", { id: this.card.id, name: this.card_name });
+            // id: this.card.id, name: this.card_name 為 updateCard 函式 的參數
+            // 把這包物件 透過dispatch方法 叫store 更新這包物件
             this.editing = false;
         }
     }

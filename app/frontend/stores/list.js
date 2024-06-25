@@ -13,9 +13,18 @@ export default new Vuex.Store({
         lists: state => state.lists // ES6箭頭函式簡寫（只有一行可以連大括弧都省略）
     },
 
-    mutations: { // 做一些動作 讓你可以更改state
-        UPDATE_LISTS(state, lists) { // 不一定要大寫 參數接state 和要改變的東西
+    mutations: { // 做一些動作 讓你可以更改state // 透過mutation改狀態
+        UPDATE_LISTS(state, lists) { // 不一定要大寫 參數接state 和要被改變的東西
             state.lists = lists; // 請mutation更新lists
+        }, 
+        REPLACE_CARD(state, card) { // 參數接state 和要被更新的卡片
+            let list_index = state.lists.findIndex(list => list.id == card.list_id); // 先找到卡片在哪一個清單中
+            let card_index = state.lists[list_index].cards.findIndex(item => item.id == card.id); // 在去找是在清單中的哪一張卡片
+            state.lists[list_index].card.splice(card_index, 1, card);
+            // splice(從哪個地方開始（陣列索引值）, 換多少個元素, 換成什麼)
+            // 因為state是整個都有連動的，只要卡片一換掉，整個畫面上跟這個list有連動的，全部畫面都會跟著動
+            // 此為使用vuex將狀態集中管理的好處
+            // console.log(list_index, card_index);
         }
     },
 
@@ -60,6 +69,26 @@ export default new Vuex.Store({
                 // error: err => {
                 //     console.log(err);
                 // }
+            });
+        },
+
+        updateCard({ commit }, { id, name }) { // { id, name }：ES6寫法，可以解構 物件 的id及name key
+            let data = new FormData();
+            data.append("card[name]", name); // 將本函式參數傳入的name 放進card[name]
+
+            Rails.ajax({
+                url: `/cards/${id}/`, //要被更新的卡片 // id為本函式參數
+                type: 'PUT',
+                data,
+                dataType: 'json',
+                success: resp => {
+                    // console.log(resp);
+                    commit('REPLACE_CARD', resp);
+                    // 將卡片傳入REPLACE_CARD函式
+                },
+                error: err => {
+                    console.log(err);
+                }
             });
         }
     }
