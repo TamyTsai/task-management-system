@@ -15,11 +15,18 @@
           <!-- list.cards 是由 index.html @lists.to_json(include: :cards)來的 -->
           <!-- 元件中 再用 其他元件 -->
         <div class="input-area">
-          <textarea class="content" v-model="content"></textarea>
+          <!-- 非編輯模式下 出現新增卡片按鈕 -->
+          <!-- <button v-if="!editing" class="button bg-gray-400" @click="editing = true">新增卡片</button> -->
+          <button v-if="!editing" class="button bg-gray-400" @click="newCard">新增卡片</button>
+          
+          <!-- 編輯模式下 出現內容輸入框、建立卡片、取消按鈕 -->
+          <textarea v-if="editing" class="content" v-model="content"></textarea>
           <!-- data -->
-          <button class="button" @click="createCard">新增卡片</button>
+          <button v-if="editing" class="button bg-green-400" @click="createCard">建立卡片</button>
+          <button v-if="editing" class="button bg-gray-400" @click="editing = false">取消</button>
           <!-- @ 為 v-on: 之簡寫 -->
-          <!-- methods -->
+          <!-- createCard寫在methods中 -->
+          <!-- 這四顆元件會跟 editing這個data屬性連動 -->
         </div>
       </div>
     </div>
@@ -38,9 +45,15 @@ export default {
           content: '', // html中v-model綁定的東西
           cards: this.list.cards, // 名為cards的 data屬性
           // 因為目前在list這個元件中 所以有被餵食的這個東西進來
+          editing: false
         }
     },
     methods: {
+      newCard(event) {
+        event.preventDefault();
+        this.editing = true;
+      },
+
       createCard(event) { // 按下 新增卡片 按鈕後 會執行的動作
         event.preventDefault();
         // console.log(this.content);
@@ -65,6 +78,7 @@ export default {
             // data屬性 有任何變化，畫面上 跟該data有關係的 就會跟著變化 即時更新
             // cards 來自 cards: this.list.cards,
             this.content = ""; // 資料傳送完（api 打完後），清掉輸入框內 文字
+            this.editing = false; // 資料傳送完（api 打完後），編輯狀態結束（建立卡片 及 取消 按鈕 消失，新增卡片 按鈕出現）
           },
           error: err => {
             console.log(err);
@@ -99,7 +113,7 @@ export default {
       }
 
       .button {
-        @apply .px-3 .py-1 .font-semibold .text-sm .bg-blue-300 .rounded;
+        @apply .px-3 .py-1 .font-semibold .text-sm .rounded;
         &:focus {
           @apply .outline-none;
         }
