@@ -29,8 +29,9 @@ document.addEventListener("turbolinks:load", function(event) {
             el, // ES6中 key與value相同時 可以只寫一個
             data: {
                 // <div id="board" data-lists="<%= @lists.to_json(include: :cards) %>">
-                lists: JSON.parse(el.dataset.lists)
+                // lists: JSON.parse(el.dataset.lists)
                 // dataset可以抓到html標籤中data屬性中的值，dataset.lists可抓到屬性data-lists中的值
+                lists: []
             },
             // components: { List: List } //註冊元件
             // List名字可以亂取  如{ 'abc': List } 
@@ -61,6 +62,21 @@ document.addEventListener("turbolinks:load", function(event) {
                         }
                     });
                 }
+            },
+            beforeMount() { // vue instance 生命週期中 的 掛載前（已經檢測el存在後）
+                Rails.ajax({
+                    url: '/lists.json',
+                    type: 'GET',
+                    dataType: 'json', // 不需要丟data 因為就是想把東西（清單 卡片 資料）撈回來而已
+                    success: resp => {
+                        console.log(resp);
+                        this.lists = resp;
+                        // 將透過API 撈出來（回應）的資料 塞給原本是空陣列的清單
+                    },
+                    error: err => {
+                        console.log(err);
+                    } 
+                });
             }
         });
     }

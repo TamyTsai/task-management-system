@@ -8,8 +8,10 @@
 </div> -->
 
 <!-- Vue.js寫法 -->
-<div id="board" class="mt-2 px-1" data-lists="<%= @lists.to_json(include: :cards) %>">
+<!-- <div id="board" class="mt-2 px-1" data-lists="<%= @lists.to_json(include: :cards) %>"> -->
+  <div id="board" class="mt-2 px-1">
   <!-- 將controller丟過來的lists轉換為json檔，且清單中有卡片的話，要一起印出來 -->
+  <!-- http://localhost:3000/lists.json 可看到內容 -->
   <!-- 用data attribute灌資料 不用api -->
   <!-- data-隨便取名字都可（data-？？？）-->
   <!-- <div id="board" data-lists="[{&quot;id&quot;:1,&quot;name&quot;:&quot;TODO&quot;,&quot;user_id&quot;:1,&quot;position&quot;:1,&quot;created_at&quot;:&quot;2024-06-24T10:28:07.411Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:07.411Z&quot;,&quot;cards&quot;:[]},{&quot;id&quot;:2,&quot;name&quot;:&quot;DOING&quot;,&quot;user_id&quot;:1,&quot;position&quot;:2,&quot;created_at&quot;:&quot;2024-06-24T10:28:25.370Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:25.370Z&quot;,&quot;cards&quot;:[]},{&quot;id&quot;:3,&quot;name&quot;:&quot;DONE&quot;,&quot;user_id&quot;:1,&quot;position&quot;:3,&quot;created_at&quot;:&quot;2024-06-24T10:28:30.985Z&quot;,&quot;updated_at&quot;:&quot;2024-06-24T10:28:30.985Z&quot;,&quot;cards&quot;:[]}]"> -->
