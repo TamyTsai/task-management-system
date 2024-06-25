@@ -1,7 +1,14 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :lists
+  resources :lists do
+    # url: `/lists/${this.lists[event.moved.newIndex].id}/move`
+    member do
+      put :move
+      # move_list    PUT    /lists/:id/move(.:format)         lists#move
+    end
+  end
+
   resources :cards
   
   root 'lists#index'

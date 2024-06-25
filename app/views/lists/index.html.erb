@@ -8,7 +8,7 @@
 </div> -->
 
 <!-- Vue.js寫法 -->
-<div id="board" class="flex mt-2 px-1" data-lists="<%= @lists.to_json(include: :cards) %>">
+<div id="board" class="mt-2 px-1" data-lists="<%= @lists.to_json(include: :cards) %>">
   <!-- 將controller丟過來的lists轉換為json檔，且清單珠有卡片的話，要一起印出來 -->
   <!-- 用data attribute灌資料 不用api -->
   <!-- data-隨便取名字都可（data-？？？）-->
@@ -17,10 +17,15 @@
       <h2 class="px-3 py-1 font-bold">{{ list.name }}</h2>
     </div> -->
     <!-- 將以上獨立成一個component，達到 軟體元件再使用 的效果 -->
-    <List v-for="list in lists" :list="list" :key="list.id">
-    <!-- 為了避免重複 所以有key -->
-    <!-- list.vue 中： props: ["list"] // 於父層或外層餵資料給元件（list）的手法 -->
-    <!-- :list=「"list"」及 :key="「list」.id"是由前面的 v-for="「list」 in lists"來的 -->
-    <!-- lists是由 appliction.js中： data: { lists: JSON.parse(el.dataset.lists) } 來的 -->
-    </List>
+    <draggable v-model="lists" class="flex" @change="listMoved">
+    <!-- 使用draggable元件 -->
+    <!-- 綁定v-model 讓東西拖拉完後 相關的資料會相應地改變位置 -->
+    <!-- lists是由data屬性來的 data:{ lists: JSON.parse(el.dataset.lists) } -->
+    <!-- @change="listMoved"：change事件發生時，執行listMoved方法 -->
+      <List v-for="list in lists" :list="list" :key="list.id"></List>
+      <!-- 為了避免重複 所以有key -->
+      <!-- list.vue 中： props: ["list"] // 於父層或外層餵資料給元件（list）的手法 -->
+      <!-- :list=「"list"」及 :key="「list」.id"是由前面的 v-for="「list」 in lists"來的 -->
+      <!-- lists是由 appliction.js中： data: { lists: JSON.parse(el.dataset.lists) } 來的 -->
+    </draggable>
 </div>
