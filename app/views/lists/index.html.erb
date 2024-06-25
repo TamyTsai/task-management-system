@@ -19,11 +19,11 @@
       <h2 class="px-3 py-1 font-bold">{{ list.name }}</h2>
     </div> -->
     <!-- 將以上獨立成一個component，達到 軟體元件再使用 的效果 -->
-    <draggable v-model="lists" class="flex" @change="listMoved">
+    <draggable v-model="lists" class="flex" @change="moveList">
     <!-- 使用draggable元件 -->
     <!-- 綁定v-model 讓東西拖拉完後 相關的資料會相應地改變位置 -->
     <!-- lists是由data屬性來的 data:{ lists: JSON.parse(el.dataset.lists) } -->
-    <!-- @change="listMoved"：change事件發生時，執行listMoved方法 -->
+    <!-- @change="moveList"：change事件發生時，執行moveList方法 -->
       <List v-for="list in lists" :list="list" :key="list.id"></List>
       <!-- 為了避免重複 所以有key -->
       <!-- list.vue 中： props: ["list"] // 於父層或外層餵資料給元件（list）的手法 -->
