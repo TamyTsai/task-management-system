@@ -15,11 +15,12 @@ ActiveStorage.start()
 // vue.js
 
 import Vue from 'vue/dist/vue.esm';
-import List from 'components/list';
 import Rails from "@rails/ujs";
 import draggable from 'vuedraggable'; // 引入draggable套件 讓 清單 可以被拖拉
 import store from 'stores/list'; // 引入自己寫的vuex （不一定要叫store）
 import { mapGetters, mapActions } from "vuex";
+import List from 'components/list';
+import Newlist from 'components/newlist';
 
 document.addEventListener("turbolinks:load", function(event) {
     let el = document.querySelector('#board');
@@ -52,7 +53,7 @@ document.addEventListener("turbolinks:load", function(event) {
             // components: { List: List } //註冊元件
             // List名字可以亂取  如{ 'abc': List } 
             // ES6中key與value相同時，可以只寫一個
-            components: { List, draggable },
+            components: { List, Newlist, draggable },
             methods: {
                 ...mapActions(["loadList", "moveList"]),
                 // listMoved(event) { // 清單 拖拉後會執行的動作
