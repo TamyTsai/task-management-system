@@ -91,11 +91,11 @@ export default new Vuex.Store({
                 type: 'PUT',
                 data,
                 dataType: 'json',
-                success: resp => {
-                    // console.log(resp);
-                    commit('REPLACE_CARD', resp);
-                    // 將卡片傳入REPLACE_CARD函式
-                },
+                // success: resp => {
+                //     // console.log(resp);
+                //     commit('REPLACE_CARD', resp);
+                //     // 將卡片傳入REPLACE_CARD函式
+                // },
                 error: err => {
                     console.log(err);
                 }
@@ -111,11 +111,12 @@ export default new Vuex.Store({
                 type: 'POST',
                 data,
                 dataType: 'json',
-                success: resp => {
-                    commit('ADD_LIST', resp); // 請commit執行 ADD_LIST mutation 以及時更新畫面上被新增的清單
-                    // 收到的資料resp 觸動mutation mutation會更改state state會改畫面上的東西
-                    console.log(resp);
-                },
+                // success: resp => {
+                //     commit('ADD_LIST', resp); // 請commit執行 ADD_LIST mutation 以及時更新畫面上被新增的清單
+                //     // 收到的資料resp 觸動mutation mutation會更改state state會改畫面上的東西
+                //     console.log(resp);
+                // },
+                // board_channel.js也有commit 所以這裡不用重複做
                 error: err => {
                     console.log(err);
                 }
@@ -129,11 +130,11 @@ export default new Vuex.Store({
                 url: `/lists/${list_id}`,
                 type: 'DELETE',
                 dataType: 'json',
-                success: resp => {
-                    // console.log(resp);
-                    commit("REMOVE_LIST", list_id); // 當action被呼叫時，會得到commit 跟commit說 現在有要被刪除的list（list_id） 請更新狀態（REMOVE_LIST）（mutations）(controller沒傳resp來)
+                // success: resp => {
+                //     // console.log(resp);
+                //     commit("REMOVE_LIST", list_id); // 當action被呼叫時，會得到commit 跟commit說 現在有要被刪除的list（list_id） 請更新狀態（REMOVE_LIST）（mutations）(controller沒傳resp來)
 
-                },
+                // },
                 error: err => {
                     console.log(err);
                 }
