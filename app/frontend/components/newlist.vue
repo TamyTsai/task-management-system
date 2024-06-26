@@ -22,7 +22,7 @@ export default {
         newList(event) {
             event.preventDefault();
             this.creatingList = true;
-            this.$nextTick(() => { // 點擊建立清單按鈕的當下，還沒有輸入框，所以會變成對未定義的東西focus 而nextTick可以對下一個動作執行裡面的程式碼 所以就可以對按鈕點下後才生成的輸入框做focus
+            this.$nextTick(() => { // 點擊建立清單按鈕的當下，還沒有輸入框，所以會變成對未定義的東西focus 而nextTick可以對下一個動作執行裡面的程式碼 所以就會對按鈕按下後出現的輸入框 執行focus
                 this.$refs.list_name.focus();
             })
         },

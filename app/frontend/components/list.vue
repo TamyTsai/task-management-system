@@ -3,7 +3,12 @@
 <template> <!-- 放html一些結構的東西 -->
     <div class="bg-gray-300 mx-2 w-64 rounded px-3 py-3 flex-none h-full">
     <!-- <div class="list"> -->
-      <h2 class="font-bold">{{ list.name }}</h2>
+      <header>
+        <h2 class="font-bold">{{ list.name }}</h2>
+        <a href="#" @click="deleteList">
+          <i class="fa-regular fa-trash-can"></i>
+        </a>
+      </header>
       <!-- <h2 class="header">{{ list.name }}</h2> -->
       <!-- 元件跟局部渲染的檔案一樣，不該主動抓資料，應該要由其他地方餵資料過來 -->
       <div class="deck">
@@ -96,7 +101,7 @@ export default {
         });
       },
 
-      cardMoved(event) { // 卡片 拖拉後會執行的動作
+      cardMoved(event) { // 卡片 拖拉後 會執行的動作
         // console.log(event); // 用來先看拖拉後會出現的事件內容
 
         let evt = event.added || event.moved; // 跨清單移動會有added事件 同清單移動只有moved事件
@@ -122,6 +127,15 @@ export default {
                 console.log(err);
             }
           });
+        }
+      },
+
+      deleteList(event) { // 按下 垃圾桶 會執行的動作
+        event.preventDefault();
+        if (confirm('確認刪除清單？')) { // 會跳提醒視窗
+        this.$store.dispatch("removeList", this.list.id);
+          // this.list.id 為 removeList 函式 的參數
+          // 把這包物件 透過dispatch方法 叫store 更新這包物件
         }
       }
     }
@@ -164,6 +178,10 @@ export default {
       }
     }
  }
+
+header {
+  @apply .flex .justify-between .items-center;
+}
 
 </style>
 

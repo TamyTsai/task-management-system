@@ -17,11 +17,12 @@ export default new Vuex.Store({
         UPDATE_LISTS(state, lists) { // 不一定要大寫 參數接state 和要被改變的東西
             state.lists = lists; // 請mutation更新lists
         }, 
+
         REPLACE_CARD(state, card) { // 參數接state 和要被更新的卡片
             let list_index = state.lists.findIndex(list => list.id == card.list_id); // 先找到卡片在哪一個清單中
             let card_index = state.lists[list_index].cards.findIndex(item => item.id == card.id); // 在去找是在清單中的哪一張卡片
             state.lists[list_index].card.splice(card_index, 1, card);
-            // splice(從哪個地方開始（陣列索引值）, 換多少個元素, 換成什麼)
+            // splice(從哪個地方開始（陣列索引值）, 換多少個元素, 換成什麼（沒填的話就是清掉）)
             // 因為state是整個都有連動的，只要卡片一換掉，整個畫面上跟這個list有連動的，全部畫面都會跟著動
             // 此為使用vuex將狀態集中管理的好處
             // console.log(list_index, card_index);
@@ -29,6 +30,11 @@ export default new Vuex.Store({
         
         ADD_LIST(state, list) {
             state.lists.push(list);
+        },
+
+        REMOVE_LIST(state, list_id) { // 要透過傳入 list_id 來告訴函式 哪個list要被清掉
+            let list_index = state.lists.findIndex(list => list.id == list_id);
+            state.lists.splice(list_index, 1);
         }
     },
 
@@ -114,6 +120,23 @@ export default new Vuex.Store({
                     console.log(err);
                 }
 
+            });
+        },
+
+        removeList({ commit }, list_id) {
+            // 刪東西只要知道要刪哪個 不用準備data 直接打api
+            Rails.ajax({
+                url: `/lists/${list_id}`,
+                type: 'DELETE',
+                dataType: 'json',
+                success: resp => {
+                    // console.log(resp);
+                    commit("REMOVE_LIST", list_id); // 當action被呼叫時，會得到commit 跟commit說 現在有要被刪除的list（list_id） 請更新狀態（REMOVE_LIST）（mutations）(controller沒傳resp來)
+
+                },
+                error: err => {
+                    console.log(err);
+                }
             });
         }
     }
