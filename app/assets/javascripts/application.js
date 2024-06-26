@@ -7,53 +7,56 @@
 // vue.js
 
 import Vue from 'vue/dist/vue.esm';
-import List from 'components/list';
 import Rails from "@rails/ujs";
 import draggable from 'vuedraggable'; // 引入draggable套件 讓 清單 可以被拖拉
+import store from 'stores/list'; // 引入自己寫的vuex （不一定要叫store）
+import { mapGetters, mapActions } from "vuex";
+import List from 'components/list';
+import Newlist from 'components/newlist';
 
 document.addEventListener("turbolinks:load", function(event) {
     let el = document.querySelector('#board');
 
     if (el) { // 如果el存在的話（id board的html元素存在）
+        window.$store = store; // 讓store在脫離vue的檔案的地方 也可以用
         new Vue({ // 才進行Vue的控制
             // el: '#board'
             // el: el
             el, // ES6中 key與value相同時 可以只寫一個
-            data: {
-                // <div id="board" data-lists="<%= @lists.to_json(include: :cards) %>">
-                lists: JSON.parse(el.dataset.lists)
-                // dataset可以抓到html標籤中data屬性中的值，dataset.lists可抓到屬性data-lists中的值
+            store, // store: store（自己import的名稱） // 所有資料都放在data store
+            computed: { // 將資料（lists）拿出來
+                //...mapGetters(["lists"]) // map（收集）lists這個getter（唯讀） // ... 代表後面還可以接別的東西
+                lists: {
+                    get() { // 讀取
+                        return this.$store.state.lists;
+                    },
+
+                    set(value) { // 寫入 （為了將拖拉後的新位置寫入）
+                        this.$store.commit("UPDATE_LISTS", value);
+                    }
+                }
             },
+            // 有store就不用用data了，這包data其他地方也會用到，所以用store集中管理
+            // data: {
+            //     // <div id="board" data-lists="<%= @lists.to_json(include: :cards) %>">
+            //     // lists: JSON.parse(el.dataset.lists)
+            //     // dataset可以抓到html標籤中data屬性中的值，dataset.lists可抓到屬性data-lists中的值
+            //     lists: []
+            // },
             // components: { List: List } //註冊元件
             // List名字可以亂取  如{ 'abc': List } 
             // ES6中key與value相同時，可以只寫一個
-            components: { List, draggable },
+            components: { List, Newlist, draggable },
             methods: {
-                listMoved(event) { // 清單 拖拉後會執行的動作
-                    // console.log(event);
-
-                    // 打API 將清單拖拉後的新位置資料 傳到後端 寫入資料庫
-                    // 1.蒐集準備 要傳送到後端的資料
-                    let data = new FormData();
-                    data.append("list[position]", event.moved.newIndex + 1 ); 
-                    // 將 event.moved.newIndex + 1 （拖拉後會出現事件 事件中有個key叫moved，其中有newIndex，而newIndex從0開始算（陣列），position從1開始算，所以要+1）寫進 lists資料表的position欄位中
-                    // 2.打API
-                    Rails.ajax({
-                        // 希望打向 像 /lists/2/move 的路徑
-                        url: `/lists/${this.lists[event.moved.newIndex].id}/move`, //ES6中 字串串接變數 之寫法
-                        // lists[event.moved.newIndex].id 移動到新位置的 清單id
-                        type: 'PUT', // 更新：PUT、PATCH （讀取：GET、新建：POST）
-                        data,
-                        dataType: 'json',
-                        success: resp => {
-                            console.log(resp);
-                        },
-                        error: err => {
-                            console.log(err);
-                        }
-                    });
-                }
+                ...mapActions(["loadList", "moveList"]),
+                // listMoved(event) { // 清單 拖拉後會執行的動作
+                //     // ..... 改寫到vuex
+                // }
+            },
+            beforeMount() { // vue instance 生命週期中 的 掛載前（已經檢測el存在後）
+                this.loadList(); //loadList()函式是寫在vuex action中的 透過mapAction讓這裡也可以用
             }
         });
     }
 })
+
