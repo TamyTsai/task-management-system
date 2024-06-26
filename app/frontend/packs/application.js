@@ -26,6 +26,7 @@ document.addEventListener("turbolinks:load", function(event) {
     let el = document.querySelector('#board');
 
     if (el) { // 如果el存在的話（id board的html元素存在）
+        window.$store = store; // 讓store在脫離vue的檔案的地方 也可以用
         new Vue({ // 才進行Vue的控制
             // el: '#board'
             // el: el

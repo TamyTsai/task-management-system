@@ -30,7 +30,13 @@ class ListsController < ApplicationController
     @list = current_user.lists.new(list_params)
 
     respond_to do |format|
-      if @list.save
+      if @list.save # 清單 成功建立存入資料庫的話
+        # ActionCable.server.broadcast "board", {id: 123, name: 'kk'}
+        # {id: 123, name: 'kk'} 為 要廣播給 前台 的內容
+        # 有訂閱 此廣播頻道 者 都會收到通知
+        ActionCable.server.broadcast "board", { commit: 'ADD_LIST', payload: render_to_string(:show, format: :json) }
+        # 希望收到廣播的人 執行某一段js
+        #  { commit: 'ADD_LIST', payload: render_to_string(:show, format: :json) }：打一包commit 一包payload 渲染成字串 要渲染show檔案（或action）（格式為json）
         format.html { redirect_to list_url(@list), notice: "List was successfully created." }
         format.json { render :show, status: :created, location: @list }
       else
