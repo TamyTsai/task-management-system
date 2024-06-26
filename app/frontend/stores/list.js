@@ -25,6 +25,10 @@ export default new Vuex.Store({
             // 因為state是整個都有連動的，只要卡片一換掉，整個畫面上跟這個list有連動的，全部畫面都會跟著動
             // 此為使用vuex將狀態集中管理的好處
             // console.log(list_index, card_index);
+        },
+        
+        ADD_LIST(state, list) {
+            state.lists.push(list);
         }
     },
 
@@ -89,6 +93,27 @@ export default new Vuex.Store({
                 error: err => {
                     console.log(err);
                 }
+            });
+        },
+
+        createList({ commit }, list_name) {
+            let data = new FormData();
+            data.append("list[name]", list_name);
+
+            Rails.ajax({
+                url: 'lists',
+                type: 'POST',
+                data,
+                dataType: 'json',
+                success: resp => {
+                    commit('ADD_LIST', resp); // 請commit執行 ADD_LIST mutation 以及時更新畫面上被新增的清單
+                    // 收到的資料resp 觸動mutation mutation會更改state state會改畫面上的東西
+                    console.log(resp);
+                },
+                error: err => {
+                    console.log(err);
+                }
+
             });
         }
     }
