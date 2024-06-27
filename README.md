@@ -7,7 +7,7 @@
 - 樣式部分以SCSS撰寫，提升程式碼可讀性
 - 使用Tailwind CSS樣式設計頁面
 - 圖示使用Font Awesome，以方便控制大小顏色等設定
-- 使用ES6使JavaScript語法變得簡潔（箭頭函式、key與value相同之簡寫等）
+- 使用ES6使JavaScript語法變得簡潔（箭頭函式、key與value相同之簡寫、解構賦值等）
 - 採用UJS寫法，維持HTML簡潔
 - 運用AJAX技術，提升使用者體驗
 - 使用Vue.js框架，透過製作軟體元件，減少維護及開發之負擔，提升程式碼再用性（reuse）
